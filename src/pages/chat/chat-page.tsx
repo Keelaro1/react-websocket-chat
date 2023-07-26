@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useCallback, useContext, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
 	ChatPageContainerStyled,
 	ChatPageContentStyled,
@@ -46,38 +46,35 @@ export const ChatPage = memo((props: ChatPageProps) => {
 		);
 	};
 
-	useEffect(() => {
-		ws.onopen = () => {
-			ws.send(
-				JSON.stringify({
-					method: 'newUser',
-					user: username,
-				}),
-			);
-		};
+	ws.onopen = () => {
+		ws.send(
+			JSON.stringify({
+				method: 'newUser',
+				user: username,
+			}),
+		);
+	};
 
-		ws.onmessage = message => {
-			const data = JSON.parse(message.data);
-			switch (data.method) {
-				case 'newMessage':
-					setMessages([...messages, { ...data.message }]);
-					break;
-				case 'messages':
-					setMessages(data.messages);
-					break;
-				case 'newUser':
-				case 'userLeft':
-					setUsers(data.users);
-					break;
-				default:
-					break;
-			}
-		};
-	}, []);
+	ws.onmessage = message => {
+		const data = JSON.parse(message.data);
+		switch (data.method) {
+			case 'newMessage':
+				setMessages([...messages, { ...data.message }]);
+				break;
+			case 'messages':
+				setMessages(data.messages);
+				break;
+			case 'newUser':
+			case 'userLeft':
+				setUsers(data.users);
+				break;
+			default:
+				break;
+		}
+	};
 
 	const onSendHandler = useCallback(
 		(message: Message) => {
-			ws.close();
 			validateInputValue(message.msg) && setMessages([...messages, { ...message }]);
 			ws.send(
 				JSON.stringify({
@@ -98,7 +95,7 @@ export const ChatPage = memo((props: ChatPageProps) => {
 			<ChatPageContentStyled ref={contentRef}>
 				{showChat ? <ChatPageChatComponent messages={messages} /> : <ChatPageUserListComponent users={users} />}
 			</ChatPageContentStyled>
-			<ChatPageForm onSend={onSendHandler} />
+			{showChat && <ChatPageForm onSend={onSendHandler} />}
 		</ChatPageContainerStyled>
 	);
 });
