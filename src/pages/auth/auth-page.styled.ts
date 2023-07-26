@@ -26,7 +26,6 @@ export const AuthPageContainerContentStyled = styled.div`
 	${ButtonStyled} {
 		width: fit-content;
 		height: 38px;
-		background: #a8acfd;
 	}
 	margin-top: 36px;
 `;

@@ -6,7 +6,7 @@ import {
 	AuthPageEnterNicknameInputStyled,
 	AuthPageTitleStyled,
 } from './auth-page.styled';
-import { validateName } from '../../utils/validate';
+import { validateInputValue } from '../../utils/validate';
 import { appContext } from '../../App';
 
 interface AuthPageProps {
@@ -34,9 +34,10 @@ export const AuthPage = memo((props: AuthPageProps) => {
 					placeholder={dictionary.enterUsername}
 					value={inputName}
 					onChange={setInputNameHandler}
+					onEnter={addUserNameHandler}
 				/>
 				<AuthPageConfirmNicknameButton
-					disabled={!validateName(inputName)}
+					disabled={!validateInputValue(inputName)}
 					value={dictionary.confirmUsername}
 					onClick={addUserNameHandler}
 				/>

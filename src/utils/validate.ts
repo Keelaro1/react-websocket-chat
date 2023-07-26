@@ -1,1 +1,1 @@
-export const validateName = (name: string) => name.trim().length > 2;
+export const validateInputValue = (value: string) => value.trim().length > 2;

@@ -12,6 +12,19 @@ module.exports = {
 			title: 'React Websocket Chat',
 		}),
 	],
+	devServer: {
+		contentBase: path.join(__dirname, 'dist'),
+		compress: true,
+		host: '0.0.0.0',
+		port: 3000,
+		historyApiFallback: true,
+		open: false,
+		liveReload: false,
+		writeToDisk: true,
+		before: app => {
+			proxyConfig(app);
+		},
+	},
 	output: {
 		filename: '[name].bundle.js',
 		path: path.resolve(__dirname, 'dist'),

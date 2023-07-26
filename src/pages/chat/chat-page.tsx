@@ -1,70 +1,93 @@
-import React, { memo, useCallback, useContext, useState } from 'react';
+import React, { memo, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
-	ChatPageConfirmMessageStyled,
 	ChatPageContainerStyled,
 	ChatPageContentStyled,
-	ChatPageControlsStyled,
 	ChatPageHeaderStyled,
-	ChatPageMessageInputStyled,
 	ChatPageSwitchBtnStyled,
 	ChatPageTitle,
 } from './chat-page.styled';
 import { appContext } from '../../App';
-import { ChatPageChatComponent } from './components/chat-page-chat-component';
+import { ChatPageChatComponent, Message } from './components/chat-page-chat-component';
 import { ChatPageUserListComponent } from './components/chat-page-userlist-component';
 import { SwitchChatIcon } from '../../components/ui-kit/icons/switch-chat-icon';
+import { ChatPageForm } from './components/chat-page-message-form';
+import { validateInputValue } from '../../utils/validate';
 
-const mockMessages = [
-	{
-		msg: 'test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1test1',
-		name: 'username1',
-	},
-	{ msg: 'test2', name: 'username2' },
-	{ msg: 'test3', name: 'username3' },
-	{ msg: 'test1', name: 'username1' },
-	{ msg: 'test2', name: 'username2' },
-	{ msg: 'test3', name: 'username3' },
-	{ msg: 'test1', name: 'username1' },
-	{ msg: 'test2', name: 'username2' },
-	{ msg: 'test3', name: 'username3' },
-	{ msg: 'test1', name: 'username1' },
-	{ msg: 'test2', name: 'username2' },
-	{ msg: 'test3', name: 'username3' },
-	{ msg: 'test1', name: 'username1' },
-	{ msg: 'test2', name: 'username2' },
-	{ msg: 'test3', name: 'username3' },
-	{ msg: 'test1', name: 'username1' },
-	{ msg: 'test2', name: 'username2' },
-	{ msg: 'test3', name: 'username3' },
-	{ msg: 'test1', name: 'username1' },
-	{ msg: 'test2', name: 'username2' },
-	{ msg: 'test3', name: 'username3' },
-	{ msg: 'test1', name: 'username1' },
-	{ msg: 'test2', name: 'username2' },
-	{ msg: 'test3', name: 'username3' },
-	{ msg: 'test3', name: 'username3' },
-	{ msg: 'test1', name: 'username1' },
-	{ msg: 'test2', name: 'username2' },
-	{ msg: 'test3', name: 'username3' },
-	{ msg: 'test1', name: 'username1' },
-	{ msg: 'test2', name: 'username2' },
-	{ msg: 'test3', name: 'username3' },
-	{ msg: 'test3', name: 'username3' },
-	{ msg: 'test1', name: 'username1' },
-	{ msg: 'test2', name: 'username2' },
-	{ msg: 'test3', name: 'username3' },
-	{ msg: 'test1', name: 'username1' },
-	{ msg: 'test2', name: 'username2' },
-	{ msg: 'test3', name: 'username3' },
-];
+interface ChatPageProps {
+	readonly username: string;
+}
 
-const mockUsers = ['test', 'test2', 'test3'];
-
-export const ChatPage = memo(() => {
+export const ChatPage = memo((props: ChatPageProps) => {
+	const { username } = props;
 	const { dictionary } = useContext(appContext);
 
 	const [showChat, setShowChat] = useState<boolean>(true);
+	const [messages, setMessages] = useState<Message[]>([]);
+	const [users, setUsers] = useState<string[]>([]);
+
 	const toggleShowChat = useCallback(() => setShowChat(!showChat), [showChat]);
+	const contentRef = useRef<HTMLDivElement>(null);
+
+	// useLayoutEffect to avoid desync and blinking when page refresh happens
+	useLayoutEffect(() => {
+		if (contentRef.current) {
+			contentRef.current.scrollTop = contentRef.current.clientHeight;
+		}
+	}, [messages]);
+
+	const ws = useMemo(() => new WebSocket('ws://localhost:8080'), []);
+
+	window.onbeforeunload = () => {
+		ws.send(
+			JSON.stringify({
+				method: 'userLeft',
+				user: username,
+			}),
+		);
+	};
+
+	useEffect(() => {
+		ws.onopen = () => {
+			ws.send(
+				JSON.stringify({
+					method: 'newUser',
+					user: username,
+				}),
+			);
+		};
+
+		ws.onmessage = message => {
+			const data = JSON.parse(message.data);
+			switch (data.method) {
+				case 'newMessage':
+					setMessages([...messages, { ...data.message }]);
+					break;
+				case 'messages':
+					setMessages(data.messages);
+					break;
+				case 'newUser':
+				case 'userLeft':
+					setUsers(data.users);
+					break;
+				default:
+					break;
+			}
+		};
+	}, []);
+
+	const onSendHandler = useCallback(
+		(message: Message) => {
+			ws.close();
+			validateInputValue(message.msg) && setMessages([...messages, { ...message }]);
+			ws.send(
+				JSON.stringify({
+					method: 'newMessage',
+					message: { ...message },
+				}),
+			);
+		},
+		[messages, ws],
+	);
 
 	return (
 		<ChatPageContainerStyled>
@@ -72,19 +95,10 @@ export const ChatPage = memo(() => {
 				<ChatPageTitle>{showChat ? dictionary.chat : dictionary.users}</ChatPageTitle>
 				<ChatPageSwitchBtnStyled icon={SwitchChatIcon} onClick={toggleShowChat} />
 			</ChatPageHeaderStyled>
-			<ChatPageContentStyled>
-				{showChat ? (
-					<ChatPageChatComponent messages={mockMessages} />
-				) : (
-					<ChatPageUserListComponent users={mockUsers} />
-				)}
+			<ChatPageContentStyled ref={contentRef}>
+				{showChat ? <ChatPageChatComponent messages={messages} /> : <ChatPageUserListComponent users={users} />}
 			</ChatPageContentStyled>
-			<ChatPageControlsStyled>
-				<ChatPageMessageInputStyled placeholder={dictionary.enterMessage}></ChatPageMessageInputStyled>
-				<ChatPageConfirmMessageStyled
-					onClick={() => {}}
-					value={dictionary.sendAMessage}></ChatPageConfirmMessageStyled>
-			</ChatPageControlsStyled>
+			<ChatPageForm onSend={onSendHandler} />
 		</ChatPageContainerStyled>
 	);
 });

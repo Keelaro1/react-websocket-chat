@@ -6,10 +6,17 @@ interface InputProps {
 	readonly placeholder?: string;
 	readonly value?: string;
 	readonly onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+	readonly onEnter?: () => void;
 }
 
 export const Input = memo((props: InputProps) => {
-	return <InputStyled type={'text'} {...props} />;
+	const handleKeyDown = (event: React.KeyboardEvent) => {
+		if (event.key === 'Enter') {
+			props.onEnter && props.onEnter();
+		}
+	};
+
+	return <InputStyled onKeyDown={handleKeyDown} type={'text'} {...props} />;
 });
 
 Input.displayName = 'Input';

@@ -9,7 +9,7 @@ import { RuDictionary } from './localization/ru';
 import { EnDictionary } from './localization/en';
 
 const DEFAULT_LANGUAGE = 'EN';
-const LS_USERNAME_KEY = 'Username';
+export const LS_USERNAME_KEY = 'Username';
 
 interface AppContext {
 	readonly dictionary: RuDictionary | EnDictionary;
@@ -30,7 +30,7 @@ export const App = (): JSX.Element => {
 	return (
 		<appContext.Provider value={{ dictionary: localization[language] }}>
 			<LocalizationButtons changeLanguage={changeLanguage} />
-			{lsUsername ? <ChatPage /> : <AuthPage addUserName={addUserName} />}
+			{lsUsername ? <ChatPage username={lsUsername} /> : <AuthPage addUserName={addUserName} />}
 		</appContext.Provider>
 	);
 };

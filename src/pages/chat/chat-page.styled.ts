@@ -45,7 +45,6 @@ export const ChatPageControlsStyled = styled.div`
 	${ButtonStyled} {
 		width: fit-content;
 		height: 38px;
-		background: #a8acfd;
 	}
 	display: flex;
 	align-items: center;
