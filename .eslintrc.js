@@ -19,7 +19,7 @@ module.exports = {
 			version: 'detect',
 		},
 	},
-	plugins: ['@typescript-eslint', 'react', 'unused-imports'],
+	plugins: ['@typescript-eslint', 'react', 'unused-imports', 'react-hooks'],
 	rules: {
 		quotes: ['error', 'single'],
 		'@typescript-eslint/adjacent-overload-signatures': 'off',
@@ -120,5 +120,7 @@ module.exports = {
 		'sort-keys': 'off',
 		'use-isnan': 'error',
 		'no-new-func': 'error',
+		'react-hooks/rules-of-hooks': 'error',
+		'react-hooks/exhaustive-deps': 'warn',
 	},
 };

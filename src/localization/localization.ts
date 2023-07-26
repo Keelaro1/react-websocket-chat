@@ -2,8 +2,8 @@ import { EnDictionary, enDict } from './en';
 import { RuDictionary, ruDict } from './ru';
 
 interface Localization {
-	EN: EnDictionary;
-	RU: RuDictionary;
+	readonly EN: EnDictionary;
+	readonly RU: RuDictionary;
 }
 
 export enum Languages {

@@ -4,20 +4,23 @@ import { LocalizationButtonsStyled } from './localization-buttons.styled';
 import { Languages, LocalizationLanguage } from '../../localization/localization';
 
 interface LocalizationButtonsProps {
-	changeLanguage: (language: LocalizationLanguage) => void;
+	readonly changeLanguage: (language: LocalizationLanguage) => void;
 }
 
 export const LocalizationButtons = memo((props: LocalizationButtonsProps) => {
 	const { changeLanguage } = props;
 
-	const onChangeLanguageHandler = useCallback((lang: LocalizationLanguage) => {
-		changeLanguage(lang);
-	}, []);
+	const onChangeLanguageHandler = useCallback(
+		(lang: LocalizationLanguage) => {
+			changeLanguage(lang);
+		},
+		[changeLanguage],
+	);
 
 	return (
 		<LocalizationButtonsStyled>
-			<Button onClick={onChangeLanguageHandler} text={Languages.EN} />
-			<Button onClick={onChangeLanguageHandler} text={Languages.RU} />
+			<Button onClick={() => onChangeLanguageHandler(Languages.EN)} value={Languages.EN} />
+			<Button onClick={() => onChangeLanguageHandler(Languages.RU)} value={Languages.RU} />
 		</LocalizationButtonsStyled>
 	);
 });

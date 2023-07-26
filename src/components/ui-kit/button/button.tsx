@@ -1,18 +1,20 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo } from 'react';
 import { ButtonStyled } from './button.styled';
-import { LocalizationLanguage } from '../../../localization/localization';
 
 interface ButtonProps {
-	text: LocalizationLanguage;
-	onClick: (lang: LocalizationLanguage) => void;
+	readonly value: string;
+	readonly onClick: () => void;
+	readonly disabled?: boolean;
 }
 
 export const Button = memo((props: ButtonProps) => {
-	const { text, onClick } = props;
+	const { value, onClick, disabled = false } = props;
 
-	const onClickHandler = useCallback(() => onClick(text), []);
-
-	return <ButtonStyled onClick={onClickHandler}>{text}</ButtonStyled>;
+	return (
+		<ButtonStyled disabled={disabled} onClick={onClick}>
+			{value}
+		</ButtonStyled>
+	);
 });
 
 Button.displayName = 'Button';
