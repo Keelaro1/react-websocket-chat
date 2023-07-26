@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState } from 'react';
+import React, { memo, useCallback, useState, useContext } from 'react';
 import {
 	AuthPageConfirmNicknameButton,
 	AuthPageContainerContentStyled,
@@ -6,17 +6,16 @@ import {
 	AuthPageEnterNicknameInputStyled,
 	AuthPageTitleStyled,
 } from './auth-page.styled';
-import { RuDictionary } from '../../localization/ru';
-import { EnDictionary } from '../../localization/en';
 import { validateName } from '../../utils/validate';
+import { appContext } from '../../App';
 
 interface AuthPageProps {
 	readonly addUserName: (name: string) => void;
-	readonly dictionary: EnDictionary | RuDictionary;
 }
 
 export const AuthPage = memo((props: AuthPageProps) => {
-	const { addUserName, dictionary } = props;
+	const { addUserName } = props;
+	const { dictionary } = useContext(appContext);
 
 	const [inputName, setInputName] = useState<string>('');
 
