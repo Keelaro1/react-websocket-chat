@@ -31,7 +31,7 @@ export const ChatPage = memo((props: ChatPageProps) => {
 	// useLayoutEffect to avoid desync and blinking when page refresh happens
 	useLayoutEffect(() => {
 		if (contentRef.current) {
-			contentRef.current.scrollTop = contentRef.current.clientHeight;
+			contentRef.current.scrollTop = contentRef.current.scrollHeight;
 		}
 	}, [messages]);
 

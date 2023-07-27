@@ -16,6 +16,9 @@ export const AuthPageContainerStyled = styled.div`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	@media (max-width: 600px) {
+		width: 300px;
+	}
 `;
 
 export const AuthPageContainerContentStyled = styled.div`
@@ -38,6 +41,9 @@ export const AuthPageEnterNicknameInputStyled = styled(Input)`
 	padding: 4px;
 	background: #a8acfd;
 	margin-right: 10px;
+	@media (max-width: 600px) {
+		min-width: 60%;
+	}
 `;
 
 export const AuthPageConfirmNicknameButton = styled(Button)``;

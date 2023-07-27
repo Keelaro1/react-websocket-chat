@@ -4,7 +4,7 @@ import { Input } from '../../components/ui-kit/input/input';
 import { ButtonStyled } from '../../components/ui-kit/button/button.styled';
 
 export const ChatPageContainerStyled = styled.div`
-	width: 25%;
+	width: 35%;
 	height: 90%;
 	background: #5a95e2;
 	position: absolute;
@@ -15,10 +15,14 @@ export const ChatPageContainerStyled = styled.div`
 	padding: 8px;
 	display: flex;
 	flex-direction: column;
+	justify-content: space-between;
+	@media (max-width: 800px) {
+		width: 65%;
+		left: 40%;
+	}
 `;
 
 export const ChatPageHeaderStyled = styled.div`
-	height: 10%;
 	${ButtonStyled} {
 		position: fixed;
 		top: 0;
@@ -33,30 +37,39 @@ export const ChatPageTitle = styled.h2`
 export const ChatPageSwitchBtnStyled = styled(Button)``;
 
 export const ChatPageContentStyled = styled.div`
-	min-height: 85%;
 	overflow-y: auto;
 	word-wrap: break-word;
 	height: fit-content;
+	flex-grow: 1;
 `;
 
 export const ChatPageControlsStyled = styled.div`
+	min-width: 100%;
 	padding-top: 16px;
-	height: 5%;
 	${ButtonStyled} {
 		width: fit-content;
 		height: 38px;
+		right: 20px;
+		position: absolute;
+		@media (max-width: 800px) {
+			display: none;
+		}
 	}
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
+	bottom: 5px;
+	align-self: end;
 `;
 
 export const ChatPageMessageInputStyled = styled(Input)`
+	width: 75%;
 	height: 30px;
-	min-width: 75%;
 	padding: 4px;
 	background: #a8acfd;
 	margin-right: 10px;
+	@media (max-width: 800px) {
+		width: 100%;
+	}
 `;
 
 export const ChatPageConfirmMessageStyled = styled(Button)``;

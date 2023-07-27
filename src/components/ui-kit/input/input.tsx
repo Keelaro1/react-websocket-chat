@@ -10,13 +10,14 @@ interface InputProps {
 }
 
 export const Input = memo((props: InputProps) => {
+	const { onEnter, ...rest } = props;
 	const handleKeyDown = (event: React.KeyboardEvent) => {
 		if (event.key === 'Enter') {
-			props.onEnter && props.onEnter();
+			onEnter && onEnter();
 		}
 	};
 
-	return <InputStyled onKeyDown={handleKeyDown} type={'text'} {...props} />;
+	return <InputStyled onKeyDown={handleKeyDown} type={'text'} {...rest} />;
 });
 
 Input.displayName = 'Input';
