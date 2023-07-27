@@ -1,28 +1,27 @@
 import React, { memo, useCallback, useContext, useState } from 'react';
 import { ChatPageConfirmMessageStyled, ChatPageControlsStyled, ChatPageMessageInputStyled } from '../chat-page.styled';
-import { LS_USERNAME_KEY, appContext } from '../../../App';
+import { appContext } from '../../../App';
 import { Message } from './chat-page-chat-component';
-import { getFromLs } from '../../../utils/localstorage';
 import { validateInputValue } from '../../../utils/validate';
 
 interface ChatPageFormProps {
 	readonly onSend: (message: Message) => void;
+	readonly username: string;
 }
 
 export const ChatPageForm = memo((props: ChatPageFormProps) => {
 	const { dictionary } = useContext(appContext);
-	const { onSend } = props;
+	const { onSend, username } = props;
 	const [inputValue, setInputValue] = useState<string>('');
-	const name = getFromLs(LS_USERNAME_KEY);
 
 	const setInputNameHandler = useCallback(
 		(e: React.ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value),
 		[],
 	);
 	const onSendHandler = useCallback(() => {
-		onSend({ msg: inputValue, name: name ?? '' });
+		onSend({ msg: inputValue, name: username ?? '' });
 		setInputValue('');
-	}, [inputValue, name, onSend]);
+	}, [inputValue, onSend, username]);
 
 	return (
 		<ChatPageControlsStyled>

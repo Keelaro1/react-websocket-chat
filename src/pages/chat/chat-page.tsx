@@ -95,7 +95,7 @@ export const ChatPage = memo((props: ChatPageProps) => {
 			<ChatPageContentStyled ref={contentRef}>
 				{showChat ? <ChatPageChatComponent messages={messages} /> : <ChatPageUserListComponent users={users} />}
 			</ChatPageContentStyled>
-			{showChat && <ChatPageForm onSend={onSendHandler} />}
+			{showChat && <ChatPageForm onSend={onSendHandler} username={username} />}
 		</ChatPageContainerStyled>
 	);
 });
